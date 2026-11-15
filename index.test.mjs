@@ -814,3 +814,25 @@ test("podcast repeated offsets recover only with a complete bounded prefix", asy
     assert.ok(calls.every(limit=>limit<=2000));
   }
 });
+
+// EAPI requests target interfacepc with a Windows PC payload; pairing them with
+// an iOS User-Agent triggers -460 risk refusals on playback requests.
+test("eapi requests align User-Agent with the PC client payload and host", async () => {
+  let seenUrl = "";
+  let seenHeaders = {};
+  let seenPayload = null;
+  const { plugin } = await setup(async (url, init) => {
+    seenUrl = url;
+    seenHeaders = init.headers;
+    seenPayload = decode(init.body);
+    return response({
+      code: 200,
+      data: [{ id: 1, code: 200, url: "https://m1.music.126.net/song.mp3", type: "mp3", level: "exhigh" }],
+    });
+  });
+  await plugin.stream({ id: "1" });
+  assert.ok(seenUrl.startsWith("https://interfacepc.music.163.com/eapi/"));
+  assert.equal(seenPayload.data.header.os, "pc");
+  assert.ok(seenHeaders["User-Agent"].includes(`NeteaseMusicDesktop/${seenPayload.data.header.appver}`));
+  assert.ok(!seenHeaders["User-Agent"].includes("iPhone"));
+});

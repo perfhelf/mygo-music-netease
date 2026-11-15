@@ -8,7 +8,9 @@ const EAPI = "https://interfacepc.music.163.com";
 // Protocol key shared by the upstream client, not a user's credential.
 const EAPI_KEY = "e82ckenh8dichen8";
 const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15";
-const EAPI_UA = "NeteaseMusic 9.0.90/5038 (iPhone; iOS 16.2; zh_CN)";
+// Match the Windows desktop client fingerprint sent in the EAPI payload header
+// (os: "pc", appver: "3.1.17.204416") and the interfacepc host to avoid -460 risk blocks.
+const EAPI_UA = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Safari/537.36 Chrome/91.0.4472.164 NeteaseMusicDesktop/3.1.17.204416";
 const PAGE_SIZE = 30;
 const PLAYLIST_LIMIT = 1000;
 const PRIVATE_RADAR = "3136952023";
